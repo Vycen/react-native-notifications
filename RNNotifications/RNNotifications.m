@@ -148,7 +148,7 @@ RCT_ENUM_CONVERTER(UIUserNotificationActionBehavior, (@{
     }
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]] ?: @{};
     content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
-
+  
     NSDate *triggerDate = [RCTConvert NSDate:details[@"fireDate"]];
     UNCalendarNotificationTrigger *trigger = nil;
     if (triggerDate != nil) {
@@ -612,10 +612,6 @@ RCT_EXPORT_METHOD(consumeBackgroundQueue)
 
 RCT_EXPORT_METHOD(localNotification:(NSDictionary *)notification withId:(NSString *)notificationId)
 {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
-        UNNotificationRequest* localNotification = [RCTConvert UNNotificationRequest:notification withId:notificationId];
-        [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:localNotification withCompletionHandler:nil];
-    } else {
         UILocalNotification* localNotification = [RCTConvert UILocalNotification:notification];
         NSMutableArray* userInfo = localNotification.userInfo.mutableCopy;
         [userInfo setValue:notificationId forKey:@"__id"];
@@ -626,7 +622,7 @@ RCT_EXPORT_METHOD(localNotification:(NSDictionary *)notification withId:(NSStrin
         } else {
             [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
         }
-    }
+  
 }
 
 RCT_EXPORT_METHOD(cancelLocalNotification:(NSString *)notificationId)
